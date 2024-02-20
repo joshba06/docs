@@ -22,6 +22,7 @@ const (
 	DocumentsService_AddDocument_FullMethodName   = "/documents.v1.DocumentsService/AddDocument"
 	DocumentsService_GetDocument_FullMethodName   = "/documents.v1.DocumentsService/GetDocument"
 	DocumentsService_ListDocuments_FullMethodName = "/documents.v1.DocumentsService/ListDocuments"
+	DocumentsService_GetFile_FullMethodName       = "/documents.v1.DocumentsService/GetFile"
 )
 
 // DocumentsServiceClient is the client API for DocumentsService service.
@@ -31,6 +32,7 @@ type DocumentsServiceClient interface {
 	AddDocument(ctx context.Context, in *AddDocumentRequest, opts ...grpc.CallOption) (*Document, error)
 	GetDocument(ctx context.Context, in *GetDocumentRequest, opts ...grpc.CallOption) (*Document, error)
 	ListDocuments(ctx context.Context, in *ListDocumentsRequest, opts ...grpc.CallOption) (DocumentsService_ListDocumentsClient, error)
+	GetFile(ctx context.Context, in *GetFileRequest, opts ...grpc.CallOption) (*File, error)
 }
 
 type documentsServiceClient struct {
@@ -91,6 +93,15 @@ func (x *documentsServiceListDocumentsClient) Recv() (*Document, error) {
 	return m, nil
 }
 
+func (c *documentsServiceClient) GetFile(ctx context.Context, in *GetFileRequest, opts ...grpc.CallOption) (*File, error) {
+	out := new(File)
+	err := c.cc.Invoke(ctx, DocumentsService_GetFile_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DocumentsServiceServer is the server API for DocumentsService service.
 // All implementations should embed UnimplementedDocumentsServiceServer
 // for forward compatibility
@@ -98,6 +109,7 @@ type DocumentsServiceServer interface {
 	AddDocument(context.Context, *AddDocumentRequest) (*Document, error)
 	GetDocument(context.Context, *GetDocumentRequest) (*Document, error)
 	ListDocuments(*ListDocumentsRequest, DocumentsService_ListDocumentsServer) error
+	GetFile(context.Context, *GetFileRequest) (*File, error)
 }
 
 // UnimplementedDocumentsServiceServer should be embedded to have forward compatible implementations.
@@ -112,6 +124,9 @@ func (UnimplementedDocumentsServiceServer) GetDocument(context.Context, *GetDocu
 }
 func (UnimplementedDocumentsServiceServer) ListDocuments(*ListDocumentsRequest, DocumentsService_ListDocumentsServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListDocuments not implemented")
+}
+func (UnimplementedDocumentsServiceServer) GetFile(context.Context, *GetFileRequest) (*File, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFile not implemented")
 }
 
 // UnsafeDocumentsServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -182,6 +197,24 @@ func (x *documentsServiceListDocumentsServer) Send(m *Document) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _DocumentsService_GetFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DocumentsServiceServer).GetFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DocumentsService_GetFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DocumentsServiceServer).GetFile(ctx, req.(*GetFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DocumentsService_ServiceDesc is the grpc.ServiceDesc for DocumentsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -196,6 +229,10 @@ var DocumentsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDocument",
 			Handler:    _DocumentsService_GetDocument_Handler,
+		},
+		{
+			MethodName: "GetFile",
+			Handler:    _DocumentsService_GetFile_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

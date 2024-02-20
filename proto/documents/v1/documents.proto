@@ -54,7 +54,17 @@ service DocumentsService {
     };
   }
 
-
+  rpc GetFile(GetFileRequest) returns (File) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/documents/{document_id}/files/{file_id}
+      get: "/api/v1/documents/{document_id}/files/{file_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a file associated with a document"
+      description: "Get a file associated with a document from the server."
+      tags: "Files"
+    };
+  }
 }
 
 message AddDocumentRequest {
@@ -64,10 +74,21 @@ message AddDocumentRequest {
 message Document {
   string id = 1;
   string content = 2;
+  repeated File files = 3;
+}
+
+message File {
+  string id = 1;
+  string content = 2;
 }
 
 message GetDocumentRequest {
   string document_id = 1;
+}
+
+message GetFileRequest {
+  string document_id = 1;
+  string file_id = 2;
 }
 
 message ListDocumentsRequest {}

@@ -115,6 +115,44 @@
           "Documents"
         ]
       }
+    },
+    "/api/v1/documents/{documentId}/files/{fileId}": {
+      "get": {
+        "summary": "Get a file associated with a document",
+        "description": "Get a file associated with a document from the server.",
+        "operationId": "DocumentsService_GetFile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1File"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Files"
+        ]
+      }
     }
   },
   "definitions": {
@@ -155,6 +193,24 @@
       }
     },
     "v1Document": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1File"
+          }
+        }
+      }
+    },
+    "v1File": {
       "type": "object",
       "properties": {
         "id": {

@@ -23,6 +23,36 @@ type Backend struct {
 func New() *Backend {
 	return &Backend{
 		mu: &sync.RWMutex{},
+		documents: []*documentsv1.Document{
+			{
+				Id:      "doc_001",
+				Content: "This is the content of document 001.",
+				Files: []*documentsv1.File{
+					{
+						Id:      "file_001",
+						Content: "File content 001",
+					},
+					{
+						Id:      "file_002",
+						Content: "File content 002",
+					},
+				},
+			},
+			{
+				Id:      "doc_002",
+				Content: "Another document with different content.",
+				Files: []*documentsv1.File{
+					{
+						Id:      "file_003",
+						Content: "File content 003",
+					},
+					{
+						Id:      "file_004",
+						Content: "File content 004",
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -83,4 +113,19 @@ func (b *Backend) ListDocuments(_ *documentsv1.ListDocumentsRequest, srv documen
 		}
 	}
 	return nil
+}
+
+// GetDocument gets a document in the store
+func (b *Backend) GetFile(ctx context.Context, req *documentsv1.GetFileRequest) (*documentsv1.File, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	for _, document := range b.documents {
+		if document.GetId() == req.GetDocumentId() {
+			for _, file := range document.GetFiles() {
+				f file.GetId() ==  {
+			return document, nil
+		}
+	}
+	return nil, status.Errorf(codes.NotFound, "document %q could not be found", req.GetDocumentId())
 }
