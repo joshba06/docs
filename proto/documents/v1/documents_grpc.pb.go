@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DocumentsService_AddDocument_FullMethodName = "/documents.v1.DocumentsService/AddDocument"
-	DocumentsService_GetDocument_FullMethodName = "/documents.v1.DocumentsService/GetDocument"
+	DocumentsService_AddDocument_FullMethodName   = "/documents.v1.DocumentsService/AddDocument"
+	DocumentsService_GetDocument_FullMethodName   = "/documents.v1.DocumentsService/GetDocument"
+	DocumentsService_ListDocuments_FullMethodName = "/documents.v1.DocumentsService/ListDocuments"
 )
 
 // DocumentsServiceClient is the client API for DocumentsService service.
@@ -29,6 +30,7 @@ const (
 type DocumentsServiceClient interface {
 	AddDocument(ctx context.Context, in *AddDocumentRequest, opts ...grpc.CallOption) (*Document, error)
 	GetDocument(ctx context.Context, in *GetDocumentRequest, opts ...grpc.CallOption) (*Document, error)
+	ListDocuments(ctx context.Context, in *ListDocumentsRequest, opts ...grpc.CallOption) (DocumentsService_ListDocumentsClient, error)
 }
 
 type documentsServiceClient struct {
@@ -57,12 +59,45 @@ func (c *documentsServiceClient) GetDocument(ctx context.Context, in *GetDocumen
 	return out, nil
 }
 
+func (c *documentsServiceClient) ListDocuments(ctx context.Context, in *ListDocumentsRequest, opts ...grpc.CallOption) (DocumentsService_ListDocumentsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &DocumentsService_ServiceDesc.Streams[0], DocumentsService_ListDocuments_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &documentsServiceListDocumentsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type DocumentsService_ListDocumentsClient interface {
+	Recv() (*Document, error)
+	grpc.ClientStream
+}
+
+type documentsServiceListDocumentsClient struct {
+	grpc.ClientStream
+}
+
+func (x *documentsServiceListDocumentsClient) Recv() (*Document, error) {
+	m := new(Document)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // DocumentsServiceServer is the server API for DocumentsService service.
 // All implementations should embed UnimplementedDocumentsServiceServer
 // for forward compatibility
 type DocumentsServiceServer interface {
 	AddDocument(context.Context, *AddDocumentRequest) (*Document, error)
 	GetDocument(context.Context, *GetDocumentRequest) (*Document, error)
+	ListDocuments(*ListDocumentsRequest, DocumentsService_ListDocumentsServer) error
 }
 
 // UnimplementedDocumentsServiceServer should be embedded to have forward compatible implementations.
@@ -74,6 +109,9 @@ func (UnimplementedDocumentsServiceServer) AddDocument(context.Context, *AddDocu
 }
 func (UnimplementedDocumentsServiceServer) GetDocument(context.Context, *GetDocumentRequest) (*Document, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDocument not implemented")
+}
+func (UnimplementedDocumentsServiceServer) ListDocuments(*ListDocumentsRequest, DocumentsService_ListDocumentsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListDocuments not implemented")
 }
 
 // UnsafeDocumentsServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -123,6 +161,27 @@ func _DocumentsService_GetDocument_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DocumentsService_ListDocuments_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListDocumentsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DocumentsServiceServer).ListDocuments(m, &documentsServiceListDocumentsServer{stream})
+}
+
+type DocumentsService_ListDocumentsServer interface {
+	Send(*Document) error
+	grpc.ServerStream
+}
+
+type documentsServiceListDocumentsServer struct {
+	grpc.ServerStream
+}
+
+func (x *documentsServiceListDocumentsServer) Send(m *Document) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // DocumentsService_ServiceDesc is the grpc.ServiceDesc for DocumentsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +198,12 @@ var DocumentsService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DocumentsService_GetDocument_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ListDocuments",
+			Handler:       _DocumentsService_ListDocuments_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "documents/v1/documents.proto",
 }

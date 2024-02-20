@@ -70,3 +70,17 @@ func (b *Backend) GetDocument(ctx context.Context, req *documentsv1.GetDocumentR
 	}
 	return nil, status.Errorf(codes.NotFound, "document %q could not be found", req.GetDocumentId())
 }
+
+// ListDocuments streams a list of documents in the store
+func (b *Backend) ListDocuments(_ *documentsv1.ListDocumentsRequest, srv documentsv1.DocumentsService_ListDocumentsServer) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	for _, document := range b.documents {
+		err := srv.Send(document)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

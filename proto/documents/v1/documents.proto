@@ -41,6 +41,20 @@ service DocumentsService {
       tags: "Documents"
     };
   }
+
+  rpc ListDocuments(ListDocumentsRequest) returns (stream Document) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/documents
+      get: "/api/v1/documents"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List documents"
+      description: "List all documents on the server."
+      tags: "Documents"
+    };
+  }
+
+
 }
 
 message AddDocumentRequest {
@@ -55,3 +69,5 @@ message Document {
 message GetDocumentRequest {
   string document_id = 1;
 }
+
+message ListDocumentsRequest {}
