@@ -13,8 +13,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/joshba06/docs/insecure"
+	documentsv1 "github.com/joshba06/docs/proto/documents/v1"
 	usersv1 "github.com/joshba06/docs/proto/users/v1"
-	invoicesv1 "github.com/joshba06/docs/proto/invoices/v1"
 	"github.com/joshba06/docs/third_party"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -57,11 +57,11 @@ func Run(dialAddr string) error {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
 	fmt.Println("Registered users service handler")
-	err = invoicesv1.RegisterInvoiceServiceHandler(context.Background(), gwmux, conn)
+	err = documentsv1.RegisterDocumentsServiceHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
-	fmt.Println("Registered invoice service handler")
+	fmt.Println("Registered documents service handler")
 
 	oa := getOpenAPIHandler()
 

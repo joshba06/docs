@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package documents.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {version: "1.0"};
+  external_docs: {
+    url: "https://github.com/joshba06/docs";
+    description: "gRPC-gateway boilerplate repository";
+  }
+  schemes: HTTPS;
+};
+
+service DocumentsService {
+
+  rpc AddDocument(AddDocumentRequest) returns (Document) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/documents
+      post: "/api/v1/documents"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add a document"
+      description: "Add a document to the server."
+      tags: "Documents"
+    };
+  }
+
+  rpc GetDocument(GetDocumentRequest) returns (Document) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/documents/{document_id}
+      get: "/api/v1/documents/{document_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a document"
+      description: "Get a document from the server."
+      tags: "Documents"
+    };
+  }
+}
+
+message AddDocumentRequest {
+  string content = 1;
+}
+
+message Document {
+  string id = 1;
+  string content = 2;
+}
+
+message GetDocumentRequest {
+  string document_id = 1;
+}

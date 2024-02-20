@@ -7,7 +7,7 @@ import (
 
 	"github.com/joshba06/docs/gateway"
 	"github.com/joshba06/docs/insecure"
-	invoicesv1 "github.com/joshba06/docs/proto/invoices/v1"
+	documentsv1 "github.com/joshba06/docs/proto/documents/v1"
 	usersv1 "github.com/joshba06/docs/proto/users/v1"
 	"github.com/joshba06/docs/server"
 	"google.golang.org/grpc"
@@ -32,7 +32,7 @@ func main() {
 	)
 	usersv1.RegisterUserServiceServer(s, server.New())
 
-	invoicesv1.RegisterInvoiceServiceServer(s, server.New())
+	documentsv1.RegisterDocumentsServiceServer(s, server.New())
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)

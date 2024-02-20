@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "invoices/v1/invoices.proto",
+    "title": "documents/v1/documents.proto",
     "version": "1.0"
   },
   "tags": [
     {
-      "name": "InvoiceService"
+      "name": "DocumentsService"
     }
   ],
   "schemes": [
@@ -19,16 +19,16 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/invoices": {
+    "/api/v1/documents": {
       "post": {
-        "summary": "Add an invoice",
-        "description": "Add an invoice to the server.",
-        "operationId": "InvoiceService_AddInvoice",
+        "summary": "Add a document",
+        "description": "Add a document to the server.",
+        "operationId": "DocumentsService_AddDocument",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Invoice"
+              "$ref": "#/definitions/v1Document"
             }
           },
           "default": {
@@ -44,25 +44,25 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1AddInvoiceRequest"
+              "$ref": "#/definitions/v1AddDocumentRequest"
             }
           }
         ],
         "tags": [
-          "Invoices"
+          "Documents"
         ]
       }
     },
-    "/api/v1/invoices/{invoiceId}": {
+    "/api/v1/documents/{documentId}": {
       "get": {
-        "summary": "Get an invoice",
-        "description": "Get an invoice from the server.",
-        "operationId": "InvoiceService_GetInvoice",
+        "summary": "Get a document",
+        "description": "Get a document from the server.",
+        "operationId": "DocumentsService_GetDocument",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Invoice"
+              "$ref": "#/definitions/v1Document"
             }
           },
           "default": {
@@ -74,14 +74,14 @@
         },
         "parameters": [
           {
-            "name": "invoiceId",
+            "name": "documentId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "Invoices"
+          "Documents"
         ]
       }
     }
@@ -115,7 +115,7 @@
         }
       }
     },
-    "v1AddInvoiceRequest": {
+    "v1AddDocumentRequest": {
       "type": "object",
       "properties": {
         "content": {
@@ -123,15 +123,7 @@
         }
       }
     },
-    "v1AddInvoiceResponse": {
-      "type": "object",
-      "properties": {
-        "invoice": {
-          "$ref": "#/definitions/v1Invoice"
-        }
-      }
-    },
-    "v1Invoice": {
+    "v1Document": {
       "type": "object",
       "properties": {
         "id": {
