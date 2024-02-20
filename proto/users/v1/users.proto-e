@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package users.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {version: "1.0"};
+  external_docs: {
+    url: "https://github.com/johanbrandhorst/grpc-gateway-boilerplate";
+    description: "gRPC-gateway boilerplate repository";
+  }
+  schemes: HTTPS;
+};
+
+service UserService {
+
+  rpc AddUser(AddUserRequest) returns (AddUserResponse) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/users
+      post: "/api/v1/users"
+      body: "*"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add a user"
+      description: "Add a user to the server."
+      tags: "Users"
+    };
+  }
+}
+
+message AddUserRequest {
+  string email = 1;
+}
+
+message AddUserResponse {
+  User user = 1;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+}
